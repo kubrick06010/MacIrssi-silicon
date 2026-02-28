@@ -1,0 +1,33 @@
+MAKEFILE=$(abspath $(BUILD_ROOT)/gettext-build/Makefile)
+ARCH_FLAGS=$(patsubst %, -arch %,$(ARCHS))
+
+CC=llvm-gcc
+CXX=llvm-g++
+CFLAGS=-Os -g -D_POSIX_C_SOURCE=200112L $(ARCH_FLAGS) -isysroot $(SDKROOT)
+CXXFLAGS=$(ARCH_FLAGS) -isysroot $(SDKROOT)
+LDFLAGS=-Wl,-syslibroot,$(SDKROOT) $(ARCH_FLAGS) -fno-common
+
+all:	$(MAKEFILE)
+
+$(MAKEFILE):	Makefile.xcode configure Makefile.in
+	rm -rf "$(BUILD_ROOT)"/gettext-build
+	mkdir -p "$(BUILD_ROOT)"/gettext-build
+	ditto ./ "$(BUILD_ROOT)"/gettext-build
+	touch "$(BUILD_ROOT)"/gettext-build/gettext-{runtime,tools}/po/*
+	make -C "$(BUILD_ROOT)"/gettext-build -f Makefile.xcode real-configure
+	
+.PHONY:		real-configure
+real-configure:
+	CC="$(CC)" \
+	CXX="$(CXX)" \
+	CFLAGS="$(CFLAGS)" \
+	CXXFLAGS="$(CXXFLAGS)" \
+	LDFLAGS="$(LDFLAGS)" \
+	PATH="$(BUILD_ROOT)/sed-build/sed:$(PATH)" \
+	./configure --prefix=$(BUILT_PRODUCTS_DIR) \
+		--disable-dependency-tracking \
+		--disable-java \
+		--with-libiconv-prefix=$(SDK_DIR)/usr
+
+clean:
+	echo "warning: gettext not cleaned. if you really want to clean MILib, do a git reset/git clean of your MILibs."

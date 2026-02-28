@@ -1,0 +1,63 @@
+OS_VER	:= $(shell sw_vers -productVersion)
+ARCH_FLAGS=$(patsubst %, -arch %,$(ARCHS))
+
+PKG_CONFIG 	:= $(abspath $(BUILD_ROOT)/pkg-config-build)
+MSGFMT		:= $(BUILT_PRODUCTS_DIR)/bin
+PATH		:= $(PATH):$(PKG_CONFIG):$(MSGFMT)
+
+INCLUDE		:= $(BUILT_PRODUCTS_DIR)/include
+LIBS 		:= $(BUILT_PRODUCTS_DIR)/lib
+ARCH		:= $(shell uname -p)
+
+MAKEFILE	:= $(abspath $(BUILD_ROOT)/glib-build/Makefile)
+
+ifeq ($(findstring 10.4, $(OS_VER)), 10.4)
+	CC := gcc
+	CFLAGS	:= -Os -g -D_POSIX_C_SOURCE=200112L $(ARCH_FLAGS) -isysroot $(SDKROOT) -I$(INCLUDE)
+	LDFLAGS := -Wl,-syslibroot,$(SDKROOT) $(ARCH_FLAGS) -L$(LIBS)
+else
+ifeq ($(findstring 10.5, $(OS_VER)), 10.5)
+	CC := gcc
+	CFLAGS	:= -Os -g $(ARCH_FLAGS) -isysroot $(SDKROOT) -I$(INCLUDE)
+	LDFLAGS := -Wl,-syslibroot,$(SDKROOT) $(ARCH_FLAGS) -L$(LIBS)
+else
+	CC := llvm-gcc
+	CFLAGS	:= -Os -g $(ARCH_FLAGS) -isysroot $(SDKROOT) -I$(INCLUDE)
+	LDFLAGS := $(ARCH_FLAGS) -L$(LIBS)
+endif
+endif
+
+all:	$(MAKEFILE)
+
+$(MAKEFILE):	Makefile.xcode configure Makefile.in config.h.in
+	rm -rf "$(BUILD_ROOT)"/glib-build
+	mkdir -p "$(BUILD_ROOT)"/glib-build
+	ditto ./ "$(BUILD_ROOT)"/glib-build
+	make -C "$(BUILD_ROOT)"/glib-build -f Makefile.xcode real-configure
+	
+.PHONY: real-configure
+real-configure:
+	CC="$(CC)" \
+	PATH="$(PATH)" \
+	CFLAGS="$(CFLAGS)" \
+	LDFLAGS="$(LDFLAGS)" \
+	./configure \
+		--prefix=$(BUILT_PRODUCTS_DIR) \
+		--disable-dependency-tracking \
+		--disable-gtk-doc-html \
+		--with-libiconv=native \
+		--enable-debug=yes
+	# compiling fat 64-bit/32-bit creates a gint64 of the wrong size for i386
+	patch -p0 < config.status.patch || exit 1
+	chmod +x config.status
+	# make sure we remove glibconfig.h so it gets rebuild at make time
+	rm glibconfig.h
+	if [ "x$(ARCH)" == "xpowerpc" ]; then \
+		mv config.h config.h.wrong ;\
+		cat config.h.wrong | sed -e "s|#define G_ATOMIC_POWERPC 1||" > config.h ;\
+		mv libtool libtool.wrong ;\
+		cat libtool.wrong | sed -e "s|sys_lib_search_path_spec=.*|sys_lib_search_path_spec=\"/Developer/SDKs/MacOSX10.4u.sdk/usr/lib\"|g" > libtool ;\
+	fi
+
+clean:
+	echo "warning: glib not cleaned. if you really want to clean MILib, do a git reset/git clean of your MILibs."

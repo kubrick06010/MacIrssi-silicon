@@ -1,0 +1,13 @@
+--- config.status.orig	2011-01-23 19:08:08.000000000 -0800
++++ config.status	2011-01-23 19:08:25.000000000 -0800
+@@ -3361,5 +3361,10 @@
+   esac
+ done # for ac_tag
+ 
++echo "#ifdef __LP64__" >glibconfig.h
++cat glibconfig.x86_64.h >> glibconfig.h
++echo "#else" >>glibconfig.h
++cat glibconfig.i386.h >> glibconfig.h
++echo "#endif" >> glibconfig.h
+ 
+ as_fn_exit 0
