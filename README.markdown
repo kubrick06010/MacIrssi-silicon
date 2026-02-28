@@ -4,10 +4,6 @@ MacIrssi is an IRC client with a native Mac UI. It's based on [irssi](http://www
 
 ![](http://cl.ly/image/2v0j0F1C0W3o/Screen%20Shot%202014-02-24%20at%2009.33.43.png)
 
-## Not-really-nightlies
-
-You can download a binary version of MacIrssi [here](http://x3ro.de/downloads/MacIrssi/). These are currently updated whenever I get something worthwhile done, or if a bug gets fixed. If you encounter any issues, please let me know over at the [issue tracker](https://github.com/MacIrssi/MacIrssi/issues).
-
 
 ## Branching and Development ##
 
