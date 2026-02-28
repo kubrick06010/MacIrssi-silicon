@@ -17,7 +17,6 @@
  */
 
 #import "NSString+Additions.h"
-#import <GoogleToolboxForMac/GTMRegex.h>
 
 @implementation NSString (Additions)
 
@@ -44,25 +43,27 @@
                         "((/?)|" // a slash isn't required if there is no file name 
                         "((/[0-9a-zA-Z_!~*'.;?:@&=+$,%#-]+)|\\(([0-9a-zA-Z_!~*'.;?:@&=+$,%#-]+)\\))+/?)";
 
-  // Old behavior for pre 10.7 systems
-  if(NSClassFromString(@"NSDataDetector") == nil) {
-    GTMRegex *regex = [GTMRegex regexWithPattern:pattern];
-    NSEnumerator *matchesEnumerator = [regex matchSegmentEnumeratorForString:self];
-
-    GTMRegexStringSegment *match;
-    while (match = [matchesEnumerator nextObject]) {
-      [urls addObject:[match string]];
+  NSError *error = nil;
+  NSDataDetector *detector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:&error];
+  if (detector != nil)
+  {
+    NSArray *matches = [detector matchesInString:self options:0 range:NSMakeRange(0, [self length])];
+    for (NSTextCheckingResult *result in matches)
+    {
+      if ([result URL])
+      {
+        [urls addObject:[[result URL] absoluteString]];
+      }
     }
-
-  } else {
-    NSDataDetector *detect = [[NSDataDetector alloc] initWithTypes:NSTextCheckingTypeLink error:nil];
-    NSArray *matches = [detect matchesInString:self options:nil range:NSMakeRange(0, [self length])];
-
-    for(NSTextCheckingResult *result in matches) {
-      [urls addObject:[[result URL] absoluteString]];
+  }
+  else
+  {
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
+    NSArray *matches = [regex matchesInString:self options:0 range:NSMakeRange(0, [self length])];
+    for (NSTextCheckingResult *match in matches)
+    {
+      [urls addObject:[self substringWithRange:[match range]]];
     }
-
-    [detect release];
   }
 
   return urls;

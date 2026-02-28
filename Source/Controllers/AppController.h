@@ -17,7 +17,6 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "Growl/Growl.h"
 #import "ChannelBar.h"
 #import "MISplitView.h"
 #import "MIResizingTextView.h"
@@ -36,7 +35,7 @@
 #import "servers-setup.h"
 #import "channels-setup.h"
 #import "servers-reconnect.h"
-#import <Sparkle/Sparkle.h>
+#import "SUUpdaterCompat.h"
 
 @class ChannelController;
 @class EventController;
@@ -50,7 +49,7 @@ extern char **argv;
 #define MIChannelBarHorizontalOrientation 0
 #define MIChannelBarVerticalOrientation   1
 
-@interface AppController : NSObject <GrowlApplicationBridgeDelegate, NSSplitViewDelegate> {
+@interface AppController : NSObject <NSSplitViewDelegate, NSUserNotificationCenterDelegate> {
 	IBOutlet NSWindow *mainWindow;
 	IBOutlet NSTabView *tabView;
   
@@ -214,8 +213,7 @@ extern char **argv;
 - (ChannelController*)currentChannelController;
 - (EventController*)eventController;
 
-/* Growl delegate */
-- (NSDictionary *) registrationDictionaryForGrowl;
+/* Notification click handler */
 - (void) growlNotificationWasClicked:(id)clickContext;
 
 /* for NSTableView's dataSource */

@@ -132,7 +132,7 @@ char *word_complete(WINDOW_REC *window, const char *line, int *pos, int erase);
 			/********************************/
 			/* Move back in command history */
 			/********************************/
-			if (flags & NSShiftKeyMask)
+			if (flags & NSEventModifierFlagShift)
 				break;
 			[controller historyUp];
 			//[(NSTextView *)[self firstResponder] setSelectedRange:endRange];
@@ -142,7 +142,7 @@ char *word_complete(WINDOW_REC *window, const char *line, int *pos, int erase);
 			/***********************************/
 			/* Move forward in command history */
 			/***********************************/
-			if (flags & NSShiftKeyMask)
+			if (flags & NSEventModifierFlagShift)
 				break;
 			[controller historyDown];
 			//[(NSTextView *)[self firstResponder] setSelectedRange:endRange];
@@ -167,7 +167,7 @@ char *word_complete(WINDOW_REC *window, const char *line, int *pos, int erase);
       
     case 0x0d:
     case 0x03:
-      if (flags & NSControlKeyMask)
+      if (flags & NSEventModifierFlagControl)
       {
         break;
       }
@@ -186,7 +186,7 @@ char *word_complete(WINDOW_REC *window, const char *line, int *pos, int erase);
 			/*****************************************/
 			/* ctrl-x -> Change server (irssi style) */
 			/*****************************************/
-			if ( !(flags & NSControlKeyMask))
+			if ( !(flags & NSEventModifierFlagControl))
 				break;
 			[self changeServer:self];
 			return TRUE;			

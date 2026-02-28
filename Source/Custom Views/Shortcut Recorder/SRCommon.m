@@ -72,10 +72,10 @@ NSString * SRStringForCarbonModifierFlagsAndKeyCode( NSUInteger flags, NSInteger
 NSString * SRStringForCocoaModifierFlags( NSUInteger flags )
 {
     NSString *modifierFlagsString = [NSString stringWithFormat:@"%@%@%@%@", 
-		( flags & NSControlKeyMask ? [NSString stringWithFormat:@"%C", KeyboardControlGlyph] : @"" ),
-		( flags & NSAlternateKeyMask ? [NSString stringWithFormat:@"%C", KeyboardOptionGlyph] : @"" ),
-		( flags & NSShiftKeyMask ? [NSString stringWithFormat:@"%C", KeyboardShiftGlyph] : @"" ),
-		( flags & NSCommandKeyMask ? [NSString stringWithFormat:@"%C", KeyboardCommandGlyph] : @"" )];
+		( flags & NSEventModifierFlagControl ? [NSString stringWithFormat:@"%C", KeyboardControlGlyph] : @"" ),
+		( flags & NSEventModifierFlagOption ? [NSString stringWithFormat:@"%C", KeyboardOptionGlyph] : @"" ),
+		( flags & NSEventModifierFlagShift ? [NSString stringWithFormat:@"%C", KeyboardShiftGlyph] : @"" ),
+		( flags & NSEventModifierFlagCommand ? [NSString stringWithFormat:@"%C", KeyboardCommandGlyph] : @"" )];
 	
 	return modifierFlagsString;
 }
@@ -110,10 +110,10 @@ NSString * SRReadableStringForCarbonModifierFlagsAndKeyCode( NSUInteger flags, N
 NSString * SRReadableStringForCocoaModifierFlagsAndKeyCode( NSUInteger flags, NSInteger keyCode )
 {
     NSString *readableString = [NSString stringWithFormat:@"%@%@%@%@%@", 
-		(flags & NSCommandKeyMask ? SRLoc(@"Command + ") : @""),
-		(flags & NSAlternateKeyMask ? SRLoc(@"Option + ") : @""),
-		(flags & NSControlKeyMask ? SRLoc(@"Control + ") : @""),
-		(flags & NSShiftKeyMask ? SRLoc(@"Shift + ") : @""),
+		(flags & NSEventModifierFlagCommand ? SRLoc(@"Command + ") : @""),
+		(flags & NSEventModifierFlagOption ? SRLoc(@"Option + ") : @""),
+		(flags & NSEventModifierFlagControl ? SRLoc(@"Control + ") : @""),
+		(flags & NSEventModifierFlagShift ? SRLoc(@"Shift + ") : @""),
         SRStringForKeyCode( keyCode )];
 	return readableString;
 }
@@ -125,11 +125,11 @@ NSUInteger SRCarbonToCocoaFlags( NSUInteger carbonFlags )
 {
 	NSUInteger cocoaFlags = ShortcutRecorderEmptyFlags;
 	
-	if (carbonFlags & cmdKey) cocoaFlags |= NSCommandKeyMask;
-	if (carbonFlags & optionKey) cocoaFlags |= NSAlternateKeyMask;
-	if (carbonFlags & controlKey) cocoaFlags |= NSControlKeyMask;
-	if (carbonFlags & shiftKey) cocoaFlags |= NSShiftKeyMask;
-	if (carbonFlags & NSFunctionKeyMask) cocoaFlags += NSFunctionKeyMask;
+	if (carbonFlags & cmdKey) cocoaFlags |= NSEventModifierFlagCommand;
+	if (carbonFlags & optionKey) cocoaFlags |= NSEventModifierFlagOption;
+	if (carbonFlags & controlKey) cocoaFlags |= NSEventModifierFlagControl;
+	if (carbonFlags & shiftKey) cocoaFlags |= NSEventModifierFlagShift;
+	if (carbonFlags & NSEventModifierFlagFunction) cocoaFlags += NSEventModifierFlagFunction;
 	
 	return cocoaFlags;
 }
@@ -141,11 +141,11 @@ NSUInteger SRCocoaToCarbonFlags( NSUInteger cocoaFlags )
 {
 	NSUInteger carbonFlags = ShortcutRecorderEmptyFlags;
 	
-	if (cocoaFlags & NSCommandKeyMask) carbonFlags |= cmdKey;
-	if (cocoaFlags & NSAlternateKeyMask) carbonFlags |= optionKey;
-	if (cocoaFlags & NSControlKeyMask) carbonFlags |= controlKey;
-	if (cocoaFlags & NSShiftKeyMask) carbonFlags |= shiftKey;
-	if (cocoaFlags & NSFunctionKeyMask) carbonFlags |= NSFunctionKeyMask;
+	if (cocoaFlags & NSEventModifierFlagCommand) carbonFlags |= cmdKey;
+	if (cocoaFlags & NSEventModifierFlagOption) carbonFlags |= optionKey;
+	if (cocoaFlags & NSEventModifierFlagControl) carbonFlags |= controlKey;
+	if (cocoaFlags & NSEventModifierFlagShift) carbonFlags |= shiftKey;
+	if (cocoaFlags & NSEventModifierFlagFunction) carbonFlags |= NSEventModifierFlagFunction;
 	
 	return carbonFlags;
 }
@@ -189,8 +189,8 @@ NSString *SRCharacterForKeyCodeAndCocoaFlags(NSInteger keyCode, NSUInteger cocoa
 	
     
 	EventModifiers modifiers = 0;
-	if (cocoaFlags & NSAlternateKeyMask)	modifiers |= optionKey;
-	if (cocoaFlags & NSShiftKeyMask)		modifiers |= shiftKey;
+	if (cocoaFlags & NSEventModifierFlagOption)	modifiers |= optionKey;
+	if (cocoaFlags & NSEventModifierFlagShift)		modifiers |= shiftKey;
 	UniCharCount maxStringLength = 4, actualStringLength;
 	UniChar unicodeString[4];
 	err = UCKeyTranslate( keyLayout, (UInt16)keyCode, kUCKeyActionDisplay, modifiers, LMGetKbdType(), kUCKeyTranslateNoDeadKeysBit, &deadKeyState, maxStringLength, &actualStringLength, unicodeString );
@@ -287,7 +287,6 @@ static NSMutableDictionary *SRSharedImageCache = nil;
 	NSImage *returnImage = [[NSImage alloc] initWithSize:size];
 	[returnImage addRepresentation:customImageRep];
 	[customImageRep release];
-	[returnImage setScalesWhenResized:YES];
 	[SRSharedImageCache setObject:returnImage forKey:name];
 	
 #ifdef SRCommonWriteDebugImagery
@@ -304,7 +303,6 @@ static NSMutableDictionary *SRSharedImageCache = nil;
 	NSImage *returnImageQDRPL = [[NSImage alloc] initWithSize:sizeQDRPL];
 	[returnImageQDRPL addRepresentation:customImageRepQDRPL];
 	[customImageRepQDRPL release];
-	[returnImageQDRPL setScalesWhenResized:YES];
 	[returnImageQDRPL setFlipped:YES];
 	NSData *tiffQDRPL = [returnImageQDRPL TIFFRepresentation];
 	[tiffQDRPL writeToURL:[NSURL fileURLWithPath:[[NSString stringWithFormat:@"~/Desktop/m_QDRPL_%@.tiff", name] stringByExpandingTildeInPath]] atomically:YES];

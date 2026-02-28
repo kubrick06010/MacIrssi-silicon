@@ -197,7 +197,7 @@
 	[self fitCells];
 	
 	[[ColorSet channelListBackgroundColor] set];
-	NSRectFillUsingOperation(NSIntersectionRect([self bounds], rect), NSCompositeCopy);	
+	NSRectFillUsingOperation(NSIntersectionRect([self bounds], rect), NSCompositingOperationCopy);	
 }
 
 @end

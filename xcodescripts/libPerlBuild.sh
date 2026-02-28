@@ -6,6 +6,9 @@ PERLLIB="/System/Library/Perl"
 # perl libraries against them and copy them to the app bundle
 
 CC="llvm-gcc"
+if ! command -v "$CC" >/dev/null 2>&1; then
+	CC="clang"
+fi
 
 # obtained by running perl -MExtUtils::Embed -e ldopts
 IRSSI_INCLUDES="-I$SRCROOT/irssi/src -I$SRCROOT/irssi/src/core -I$SRCROOT/irssi/src/fe-common/core"
@@ -35,6 +38,10 @@ for lib in $PERLLIB/*; do
 	_CFLAGS="$CFLAGS -DMIPERL=\"$V\" -I$lib/darwin-thread-multi-2level/CORE"
 
 	if [ -e $lib/darwin-thread-multi-2level/CORE/libperl.dylib ]; then
+		if [ ! -e $lib/darwin-thread-multi-2level/CORE/EXTERN.h ]; then
+			echo "Skipping perl runtime $V: missing EXTERN.h"
+			continue
+		fi
 		CORE_SRCS=""
 		FE_SRCS=""
 

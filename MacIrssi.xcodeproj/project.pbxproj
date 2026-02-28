@@ -192,8 +192,6 @@
 		C25491780681A35900C43D63 /* CustomTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = C25491760681A35900C43D63 /* CustomTextView.h */; };
 		C25491790681A35900C43D63 /* CustomTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = C25491770681A35900C43D63 /* CustomTextView.m */; };
 		C26FC9BD08C4E56300CFD1B3 /* MacIrssi.icns in Resources */ = {isa = PBXBuildFile; fileRef = C26FC9BB08C4E56300CFD1B3 /* MacIrssi.icns */; };
-		C2A9B10C0C1187BC002A9848 /* Growl-WithInstaller.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2A9B10B0C1187BC002A9848 /* Growl-WithInstaller.framework */; };
-		C2A9B1250C118BC2002A9848 /* Growl-WithInstaller.framework in Copy Growl Framework */ = {isa = PBXBuildFile; fileRef = C2A9B10B0C1187BC002A9848 /* Growl-WithInstaller.framework */; };
 		C2CC3B150C09F404001C0DDD /* libiconv.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CC3B090C09F404001C0DDD /* libiconv.2.dylib */; };
 		C2D1679106E3E16C000EC6F9 /* ChannelBar.h in Headers */ = {isa = PBXBuildFile; fileRef = C2D1678F06E3E16C000EC6F9 /* ChannelBar.h */; };
 		C2D1679206E3E16C000EC6F9 /* ChannelBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D1679006E3E16C000EC6F9 /* ChannelBar.m */; };
@@ -223,8 +221,6 @@
 		C91F0B170F06E3C900763699 /* MISplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = C91F0B150F06E3C900763699 /* MISplitView.h */; };
 		C91F0B180F06E3C900763699 /* MISplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = C91F0B160F06E3C900763699 /* MISplitView.m */; };
 		C91F131E0F0A63F300763699 /* Themes.png in Resources */ = {isa = PBXBuildFile; fileRef = C91F131D0F0A63F300763699 /* Themes.png */; };
-		C91F139E0F0A743800763699 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C91F139D0F0A743800763699 /* Sparkle.framework */; };
-		C91F13A50F0A748600763699 /* Sparkle.framework in Copy Libraries */ = {isa = PBXBuildFile; fileRef = C91F139D0F0A743800763699 /* Sparkle.framework */; };
 		C91F13D40F0BE95F00763699 /* Keyboard.png in Resources */ = {isa = PBXBuildFile; fileRef = C91F13D30F0BE95F00763699 /* Keyboard.png */; };
 		C91F15220F110A8600763699 /* CTGradient.h in Headers */ = {isa = PBXBuildFile; fileRef = C91F15160F110A8600763699 /* CTGradient.h */; };
 		C91F15230F110A8600763699 /* CTGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = C91F15170F110A8600763699 /* CTGradient.m */; };
@@ -598,8 +594,6 @@
 		C9EBACAB0EA100D400025466 /* ServerBridgeController.h in Headers */ = {isa = PBXBuildFile; fileRef = C9EBACA90EA100D400025466 /* ServerBridgeController.h */; };
 		C9EBACAC0EA100D400025466 /* ServerBridgeController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9EBACAA0EA100D400025466 /* ServerBridgeController.m */; };
 		C9EBACE50EA1055F00025466 /* Servers.png in Resources */ = {isa = PBXBuildFile; fileRef = C9EBACE40EA1055F00025466 /* Servers.png */; };
-		C9FBBC3F1049A5A700FE4ACD /* GoogleToolboxForMac.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9FBBC3E1049A5A700FE4ACD /* GoogleToolboxForMac.framework */; };
-		C9FBBC8F1049A5BC00FE4ACD /* GoogleToolboxForMac.framework in Copy Libraries */ = {isa = PBXBuildFile; fileRef = C9FBBC3E1049A5A700FE4ACD /* GoogleToolboxForMac.framework */; };
 		C9FDCE4A129DB813004598C1 /* MIScrollViewHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = C9FDCE48129DB813004598C1 /* MIScrollViewHelper.h */; };
 		C9FDCE4B129DB813004598C1 /* MIScrollViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FDCE49129DB813004598C1 /* MIScrollViewHelper.m */; };
 /* End PBXBuildFile section */
@@ -664,8 +658,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				C9E1B1C512F00273004E75B0 /* GLib.framework in Copy Libraries */,
-				C91F13A50F0A748600763699 /* Sparkle.framework in Copy Libraries */,
-				C9FBBC8F1049A5BC00FE4ACD /* GoogleToolboxForMac.framework in Copy Libraries */,
 			);
 			name = "Copy Libraries";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -943,7 +935,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C2A9B1250C118BC2002A9848 /* Growl-WithInstaller.framework in Copy Growl Framework */,
 			);
 			name = "Copy Growl Framework";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1853,13 +1844,10 @@
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				C91026770E5C665B00E041F7 /* AddressBook.framework in Frameworks */,
 				C9667E030E3790FD00014B02 /* SystemConfiguration.framework in Frameworks */,
-				C91F139E0F0A743800763699 /* Sparkle.framework in Frameworks */,
 				C9AA5DE613062A3A00C87B25 /* Security.framework in Frameworks */,
 				C91F15580F110B6500763699 /* Carbon.framework in Frameworks */,
-				C9FBBC3F1049A5A700FE4ACD /* GoogleToolboxForMac.framework in Frameworks */,
 				C9C9415D12E9F17700A4D7A5 /* ScriptingBridge.framework in Frameworks */,
 				C98461321306554100724A88 /* SecurityInterface.framework in Frameworks */,
-				C2A9B10C0C1187BC002A9848 /* Growl-WithInstaller.framework in Frameworks */,
 				C9E1AEEB12EFFF42004E75B0 /* GLib.framework in Frameworks */,
 				C2CC3B150C09F404001C0DDD /* libiconv.2.dylib in Frameworks */,
 				C9E1AEEE12EFFF5A004E75B0 /* libirssicore.a in Frameworks */,
@@ -1894,15 +1882,12 @@
 			isa = PBXGroup;
 			children = (
 				C9C9415C12E9F17700A4D7A5 /* ScriptingBridge.framework */,
-				C2A9B10B0C1187BC002A9848 /* Growl-WithInstaller.framework */,
 				C98461311306553F00724A88 /* SecurityInterface.framework */,
 				C91F14690F10EE9900763699 /* ExceptionHandling.framework */,
 				C91F15570F110B6500763699 /* Carbon.framework */,
 				C91026760E5C665B00E041F7 /* AddressBook.framework */,
-				C91F139D0F0A743800763699 /* Sparkle.framework */,
 				C9667E020E3790FD00014B02 /* SystemConfiguration.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
-				C9FBBC3E1049A5A700FE4ACD /* GoogleToolboxForMac.framework */,
 				C2CC3B090C09F404001C0DDD /* libiconv.2.dylib */,
 			);
 			name = "Linked Frameworks";
@@ -3827,19 +3812,23 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = MacIrssi_Prefix.pch;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				HEADER_SEARCH_PATHS = (
 					"Frameworks/*.framework",
-					"$(BUILT_PRODUCTS_DIR)/Frameworks/GLib.framework/Headers",
+					"$(BUILT_PRODUCTS_DIR)/GLib.framework/Headers",
 					"$(SRCROOT)/Headers",
 				);
 				INFOPLIST_FILE = Info.plist;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_CFLAGS = "-DMACIRSSI_DEBUG";
 				OTHER_LDFLAGS = (
 					"-bind_at_load",
 					"-multiply_defined",
 					suppress,
+					"-Wl,-ld_classic",
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = MacIrssi;
@@ -3866,19 +3855,23 @@
 				GCC_MODEL_TUNING = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = MacIrssi_Prefix.pch;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				HEADER_SEARCH_PATHS = (
 					"Frameworks/*.framework",
-					"$(BUILT_PRODUCTS_DIR)/Frameworks/GLib.framework/Headers",
+					"$(BUILT_PRODUCTS_DIR)/GLib.framework/Headers",
 					"$(SRCROOT)/Headers",
 				);
 				INFOPLIST_FILE = Info.plist;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-bind_at_load",
 					"-multiply_defined",
 					suppress,
+					"-Wl,-ld_classic",
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = MacIrssi;
@@ -3899,7 +3892,8 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_OPTIMIZATION_LEVEL = 0;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				EXCLUDED_ARCHS = arm64;
 				ONLY_ACTIVE_ARCH = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
@@ -3910,7 +3904,8 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				EXCLUDED_ARCHS = arm64;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Deployment;
@@ -3948,7 +3943,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(BUILT_PRODUCTS_DIR)/Frameworks/GLib.framework/Headers",
+					"$(BUILT_PRODUCTS_DIR)/GLib.framework/Headers",
 					"$(SRCROOT)/Headers",
 					"$(SRCROOT)/irssi/src",
 				);
@@ -3978,7 +3973,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(BUILT_PRODUCTS_DIR)/Frameworks/GLib.framework/Headers",
+					"$(BUILT_PRODUCTS_DIR)/GLib.framework/Headers",
 					"$(SRCROOT)/Headers",
 					"$(SRCROOT)/irssi/src",
 				);
@@ -4005,6 +4000,9 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = Packages;
 			};
 			name = Development;
@@ -4017,6 +4015,9 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = Packages;
 				ZERO_LINK = NO;
 			};

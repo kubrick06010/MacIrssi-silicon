@@ -178,14 +178,14 @@
   NSRect backgroundRect = NSInsetRect([self bounds], 2.0, 2.0);
   if (isActive) {
     [[NSColor clearColor] set];
-    NSRectFillUsingOperation([self bounds], NSCompositeDestinationOver);	
+    NSRectFillUsingOperation([self bounds], NSCompositingOperationDestinationOver);	
     [[NSColor  colorWithCalibratedRed:246.0/255 green:249.0/255 blue:232.0/255 alpha:1.0] set];
   }
   else
   {
     [[NSColor grayColor] set];
   }
-  NSRectFillUsingOperation(backgroundRect, NSCompositeCopy);	
+  NSRectFillUsingOperation(backgroundRect, NSCompositingOperationCopy);	
   
   /* Draw channel name */
   NSRect stringRect = NSInsetRect([self bounds], [ChannelBarCell borderWidth], 1.0);

@@ -63,7 +63,7 @@
   
   while (region = [subviewRegionEnumerator nextObject])
   {
-    int index = [subviewRegions indexOfObject:region];
+    NSUInteger index = [subviewRegions indexOfObject:region];
     if (index < [[self subviews] count])
     {
       [[[self subviews] objectAtIndex:index] setFrame:NSRectFromString(region)];

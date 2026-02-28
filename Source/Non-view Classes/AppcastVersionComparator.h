@@ -17,7 +17,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <Sparkle/Sparkle.h>
+#import "SUUpdaterCompat.h"
 
 @interface AppcastVersionComparator : NSObject <SUVersionComparison> {
   

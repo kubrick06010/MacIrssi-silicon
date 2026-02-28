@@ -17,7 +17,6 @@
 */
 
 #import <SecurityInterface/SFCertificateTrustPanel.h>
-#import <Growl/GrowlApplicationBridge.h>
 #import <objc/objc-runtime.h>
 
 #import "AppController.h"
@@ -71,6 +70,39 @@ static PreferenceViewController *_sharedPrefsWindowController = nil;
 
 static char *kMIJoinChannelAlertKey = "kMIJoinChannelAlertKey";
 
+@implementation SUUpdater
+
+@synthesize delegate = _delegate;
+@synthesize feedURL = _feedURL;
+
++ (SUUpdater *)sharedUpdater
+{
+  static SUUpdater *sharedUpdater = nil;
+  if (!sharedUpdater)
+  {
+    sharedUpdater = [[SUUpdater alloc] init];
+    sharedUpdater.feedURL = [NSURL URLWithString:@"https://github.com/MacIrssi/MacIrssi/releases"];
+  }
+  return sharedUpdater;
+}
+
+- (IBAction)checkForUpdates:(id)sender
+{
+  NSURL *url = [self feedURL];
+  if (url)
+  {
+    [[NSWorkspace sharedWorkspace] openURL:url];
+  }
+}
+
+- (void)dealloc
+{
+  [_feedURL release];
+  [super dealloc];
+}
+
+@end
+
 @implementation AppController
 
 #pragma mark - Menu Actions
@@ -83,7 +115,7 @@ static char *kMIJoinChannelAlertKey = "kMIJoinChannelAlertKey";
                                      [[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSGitRevision"]]];
   
   [copyrightTextView setString:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSHumanReadableCopyright"]];
-  [copyrightTextView setAlignment:NSCenterTextAlignment range:NSMakeRange(0, [[copyrightTextView textStorage] length])];
+  [copyrightTextView setAlignment:NSTextAlignmentCenter range:NSMakeRange(0, [[copyrightTextView textStorage] length])];
   
   [aboutBox center];
   [aboutBox makeKeyAndOrderFront:sender];
@@ -243,7 +275,7 @@ static char *kMIJoinChannelAlertKey = "kMIJoinChannelAlertKey";
 {
   NSMenuItem *item = sender;
   unichar letter = [[item keyEquivalent] characterAtIndex:0];
-  NSString *key = SRStringForCocoaModifierFlagsAndKeyCode([item keyEquivalentModifierMask] | ([[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:letter] ? NSShiftKeyMask : 0), [item tag]);
+  NSString *key = SRStringForCocoaModifierFlagsAndKeyCode([item keyEquivalentModifierMask] | ([[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:letter] ? NSEventModifierFlagShift : 0), [item tag]);
   
   NSDictionary *dict = [[[NSUserDefaults standardUserDefaults] valueForKey:@"shortcutDict"] valueForKey:key];
   ShortcutBridgeController *controller = [[[ShortcutBridgeController alloc] initWithDictionary:dict] autorelease];
@@ -704,7 +736,7 @@ static char *kMIJoinChannelAlertKey = "kMIJoinChannelAlertKey";
     {
       ShortcutBridgeController *controller = [[[ShortcutBridgeController alloc] initWithDictionary:shortcut] autorelease];
       
-      NSString *equivKey = (([controller flags] & NSShiftKeyMask) | SRIsSpecialKey([controller keyCode])) ? SRStringForKeyCode([controller keyCode]) : [SRStringForKeyCode([controller keyCode]) lowercaseString];
+      NSString *equivKey = (([controller flags] & NSEventModifierFlagShift) | SRIsSpecialKey([controller keyCode])) ? SRStringForKeyCode([controller keyCode]) : [SRStringForKeyCode([controller keyCode]) lowercaseString];
       if (SRFunctionKeyToString([controller keyCode]))
       {
         equivKey = SRFunctionKeyToString([controller keyCode]);
@@ -1237,33 +1269,33 @@ static char *kMIJoinChannelAlertKey = "kMIJoinChannelAlertKey";
   {
     case TabShortcutArrows:
       [previousMenuItem setKeyEquivalent:((orientation == MIChannelBarHorizontalOrientation) ? [NSString stringWithUnicodeCharacter:NSLeftArrowFunctionKey] : [NSString stringWithUnicodeCharacter:NSUpArrowFunctionKey])];
-      [previousMenuItem setKeyEquivalentModifierMask:NSCommandKeyMask];
+      [previousMenuItem setKeyEquivalentModifierMask:NSEventModifierFlagCommand];
       [nextMenuItem setKeyEquivalent:((orientation == MIChannelBarHorizontalOrientation) ? [NSString stringWithUnicodeCharacter:NSRightArrowFunctionKey] : [NSString stringWithUnicodeCharacter:NSDownArrowFunctionKey])];
-      [nextMenuItem setKeyEquivalentModifierMask:NSCommandKeyMask];
+      [nextMenuItem setKeyEquivalentModifierMask:NSEventModifierFlagCommand];
       break;
     case TabShortcutShiftArrows:
       [previousMenuItem setKeyEquivalent:((orientation == MIChannelBarHorizontalOrientation) ? [NSString stringWithUnicodeCharacter:NSLeftArrowFunctionKey] : [NSString stringWithUnicodeCharacter:NSUpArrowFunctionKey])];
-      [previousMenuItem setKeyEquivalentModifierMask:NSCommandKeyMask|NSShiftKeyMask];
+      [previousMenuItem setKeyEquivalentModifierMask:NSEventModifierFlagCommand|NSEventModifierFlagShift];
       [nextMenuItem setKeyEquivalent:((orientation == MIChannelBarHorizontalOrientation) ? [NSString stringWithUnicodeCharacter:NSRightArrowFunctionKey] : [NSString stringWithUnicodeCharacter:NSDownArrowFunctionKey])];
-      [nextMenuItem setKeyEquivalentModifierMask:NSCommandKeyMask|NSShiftKeyMask];
+      [nextMenuItem setKeyEquivalentModifierMask:NSEventModifierFlagCommand|NSEventModifierFlagShift];
       break;
     case TabShortcutOptionArrows:
       [previousMenuItem setKeyEquivalent:((orientation == MIChannelBarHorizontalOrientation) ? [NSString stringWithUnicodeCharacter:NSLeftArrowFunctionKey] : [NSString stringWithUnicodeCharacter:NSUpArrowFunctionKey])];
-      [previousMenuItem setKeyEquivalentModifierMask:NSCommandKeyMask|NSAlternateKeyMask];
+      [previousMenuItem setKeyEquivalentModifierMask:NSEventModifierFlagCommand|NSEventModifierFlagOption];
       [nextMenuItem setKeyEquivalent:((orientation == MIChannelBarHorizontalOrientation) ? [NSString stringWithUnicodeCharacter:NSRightArrowFunctionKey] : [NSString stringWithUnicodeCharacter:NSDownArrowFunctionKey])];
-      [nextMenuItem setKeyEquivalentModifierMask:NSCommandKeyMask|NSAlternateKeyMask];
+      [nextMenuItem setKeyEquivalentModifierMask:NSEventModifierFlagCommand|NSEventModifierFlagOption];
       break;
     case TabShortcutBrackets:
       [previousMenuItem setKeyEquivalent:@"["];
-      [previousMenuItem setKeyEquivalentModifierMask:NSCommandKeyMask];
+      [previousMenuItem setKeyEquivalentModifierMask:NSEventModifierFlagCommand];
       [nextMenuItem setKeyEquivalent:@"]"];
-      [nextMenuItem setKeyEquivalentModifierMask:NSCommandKeyMask];
+      [nextMenuItem setKeyEquivalentModifierMask:NSEventModifierFlagCommand];
       break;
     case TabShortcutBraces:
       [previousMenuItem setKeyEquivalent:@"{"];
-      [previousMenuItem setKeyEquivalentModifierMask:NSCommandKeyMask];
+      [previousMenuItem setKeyEquivalentModifierMask:NSEventModifierFlagCommand];
       [nextMenuItem setKeyEquivalent:@"}"];
-      [nextMenuItem setKeyEquivalentModifierMask:NSCommandKeyMask];
+      [nextMenuItem setKeyEquivalentModifierMask:NSEventModifierFlagCommand];
       break;
     default:
       NSLog(@"channelBarOrientationDidChange: Uh, what? Invalid tabShortcuts value.");
@@ -1382,14 +1414,21 @@ static char *kMIJoinChannelAlertKey = "kMIJoinChannelAlertKey";
   
 }
 
-/**
- * Growl registration delegate
- */
-- (NSDictionary *) registrationDictionaryForGrowl
+- (void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification
 {
-  NSArray *growlNotifications = [eventController availableEventNames];
-  return [NSDictionary dictionaryWithObjectsAndKeys:growlNotifications, GROWL_NOTIFICATIONS_ALL, growlNotifications, GROWL_NOTIFICATIONS_DEFAULT, nil];
+  id context = [[notification userInfo] objectForKey:@"MIContext"];
+  if (context)
+  {
+    [self growlNotificationWasClicked:context];
+  }
+  [center removeDeliveredNotification:notification];
 }
+
+- (BOOL)userNotificationCenter:(NSUserNotificationCenter *)center shouldPresentNotification:(NSUserNotification *)notification
+{
+  return YES;
+}
+
 
 #pragma mark Sparkle Delegates
 
@@ -1727,7 +1766,7 @@ static char *kMIJoinChannelAlertKey = "kMIJoinChannelAlertKey";
   [channelTableView setUsesAlternatingRowBackgroundColors:NO];
   
   /* Init Growl */
-  [GrowlApplicationBridge setGrowlDelegate:self];
+  [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:self];
   
   /* Sleep registration */
   (void)[ConnectivityMonitor sharedMonitor];

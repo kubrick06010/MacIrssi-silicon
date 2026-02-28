@@ -19,7 +19,6 @@
 #import "EventController.h"
 #import "ChannelController.h"
 
-#import <Growl/GrowlApplicationBridge.h>
 
 @interface EventController ()
 
@@ -193,28 +192,17 @@
       [NSApp requestUserAttention:type];
     }
     
-    // Growling is a little more interesting though :)
+    // Deliver a native macOS notification.
     if ([event valueForKey:@"growlEvent"] && [[event valueForKey:@"growlEvent"] intValue] == 1)
     {
-      // Work out if we're gonna growl at all, like the other events we only growl if:
-      //   a) background is set AND ![NSApp isActive]
-      //   b) !background
+      // Only deliver in the foreground/background states selected in preferences.
       if (([event valueForKey:@"growlEventBackground"] && ([[event valueForKey:@"growlEventBackground"] intValue] == 1) && ![NSApp isActive]) ||
           ([event valueForKey:@"growlEventBackground"] && [[event valueForKey:@"growlEventBackground"] intValue] == 0) ||
           (![event valueForKey:@"growlEventBackground"]))
       {
-        // By default, the growl contains MacIrssi as the title and the event long name as the description.
         NSString *title = @"MacIrssi";
         NSString *description = [self eventNameForCode:[notification name]];
-        
-        // Set stick if we've been asked to stick until front.
-        BOOL stick = (([event valueForKey:@"growlEventUntilFront"] && [[event valueForKey:@"growlEventUntilFront"] intValue] == 1) ? YES : NO);
-        
-        // clickContext's allow growl to callback to us if the growl box is clicked. Contexts have to be provided in propertyList types
-        // So we can do one of a couple of things here:
-        //   a) We're given a ChannelController, extract the refnum (window number, basically) and set context to be an NSNumber
-        //   b) No ChannelController object but Server and Channel keys exist in the userinfo. So supply them in an NSDictionary.
-        // The callback handler will cope with these later.
+
         id context = nil;
         if ([notification object] && [[notification object] isKindOfClass:[ChannelController class]])
         {
@@ -228,54 +216,44 @@
           context = [NSDictionary dictionaryWithObjectsAndKeys:[[notification userInfo] valueForKey:@"Server"], @"Server",
                      [[notification userInfo] valueForKey:@"Channel"], @"Channel", nil];
         }
-        
-        // If there is a Description key in the dictionary, move the event name into the title and use the description
+
         if ([notification userInfo] && [[notification userInfo] valueForKey:@"Description"])
         {
           title = [self eventNameForCode:[notification name]];
           description = [[notification userInfo] valueForKey:@"Description"];
         }
-        
-        // We let you override the title too, isn't that nice. Its all supposed to be done so that you can supply as little or as much
-        // cutsomisation per event tha you need.
+
         if ([notification userInfo] && [[notification userInfo] valueForKey:@"Title"])
         {
           title = [[notification userInfo] valueForKey:@"Title"];
         }
 
-        // I haven't implemented icon overrides. Wouldn't be hard to do though.
-				NSData *icon = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"activityNewImportant" ofType:@"png"]];
-				
-        // This is a bit messy though, if you want an event to "coalesce" (that is, only even display one growl event, updating the first if dupliates are raised)
-        // then you need to add an identifier argument to the end of the notify call. Used in room activity.
-				if (![notification userInfo] ||
-					([notification userInfo] && [[notification userInfo] valueForKey:@"Coalesce"] && ![[[notification userInfo] valueForKey:@"Coalesce"] boolValue]) ||
-					([notification userInfo] && ![[notification userInfo] valueForKey:@"Coalesce"]))
-				{
-					[GrowlApplicationBridge notifyWithTitle:title
-																			description:description
-																 notificationName:[self eventNameForCode:[notification name]]
-																				 iconData:icon
-																				 priority:0
-																				 isSticky:stick
-																		 clickContext:context];
-				}
-				else
-				{
-					[GrowlApplicationBridge notifyWithTitle:title
-																			description:description
-																 notificationName:[self eventNameForCode:[notification name]]
-																				 iconData:icon
-																				 priority:0
-																				 isSticky:stick
-																		 clickContext:context
-																			 identifier:[notification name]];
-				}
-				
-			}
-		}
-    
+        NSUserNotification *userNotification = [[[NSUserNotification alloc] init] autorelease];
+        [userNotification setTitle:title];
+        [userNotification setInformativeText:description];
+
+        if (context)
+        {
+          [userNotification setUserInfo:[NSDictionary dictionaryWithObject:context forKey:@"MIContext"]];
+          [userNotification setHasActionButton:YES];
+        }
+
+        if (![notification userInfo] ||
+            ([notification userInfo] && [[notification userInfo] valueForKey:@"Coalesce"] && ![[[notification userInfo] valueForKey:@"Coalesce"] boolValue]) ||
+            ([notification userInfo] && ![[notification userInfo] valueForKey:@"Coalesce"]))
+        {
+          [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:userNotification];
+        }
+        else
+        {
+          [userNotification setIdentifier:[notification name]];
+          [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:userNotification];
+        }
+      }
+    }
+
     // Time to unlock
+
     [eventControllerLock unlock];
   }
 }

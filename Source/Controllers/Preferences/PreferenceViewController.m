@@ -1027,7 +1027,7 @@
       return NO;
     default:
     {
-      BOOL error = !(flags & NSCommandKeyMask);
+      BOOL error = !(flags & NSEventModifierFlagCommand);
       if (error)
       {
         *aReason = @"shortcut keys must contain the Command key.";
