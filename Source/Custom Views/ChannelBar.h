@@ -27,6 +27,7 @@
 	float totalStringWidth;
 	float totalWidth;
 	ChannelBarCell *activeCell;
+	NSTabView *tabView;
 }
 
 - (void)addChannel:(WINDOW_REC *)rec;

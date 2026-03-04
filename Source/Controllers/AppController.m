@@ -74,6 +74,19 @@ static char *kMIJoinChannelAlertKey = "kMIJoinChannelAlertKey";
 
 @synthesize delegate = _delegate;
 @synthesize feedURL = _feedURL;
+@synthesize automaticallyChecksForUpdates = _automaticallyChecksForUpdates;
+@synthesize sendsSystemProfile = _sendsSystemProfile;
+
+- (instancetype)init
+{
+  self = [super init];
+  if (self)
+  {
+    _automaticallyChecksForUpdates = YES;
+    _sendsSystemProfile = NO;
+  }
+  return self;
+}
 
 + (SUUpdater *)sharedUpdater
 {
@@ -1495,8 +1508,11 @@ static char *kMIJoinChannelAlertKey = "kMIJoinChannelAlertKey";
 //-------------------------------------------------------------------
 - (void)applicationWillTerminate:(NSNotification *)aNotification
 {
-  for(ChannelController *tmp in [tabView tabViewItems]) {
-    [tmp clearNickView];
+  for (NSTabViewItem *tabItem in [tabView tabViewItems]) {
+    id controller = [tabItem identifier];
+    if ([controller respondsToSelector:@selector(clearNickView)]) {
+      [controller clearNickView];
+    }
   }
 
   [IrssiCore deinitialiseCore];

@@ -116,6 +116,10 @@ OSStatus _SSLReadFunction(SSLConnectionRef connection, void *data, size_t *dataL
         *dataLength = len;
         return errSSLWouldBlock;
       }
+      if (errno == EPIPE || errno == ECONNRESET) {
+        *dataLength = len;
+        return errSSLClosedAbort;
+      }
       g_warning("read returned %d", errno);
       return errSSLInternal;
     }
@@ -139,6 +143,10 @@ OSStatus _SSLWriteFunction(SSLConnectionRef connection, void *data, size_t *data
         channel->again = GIOSSLWriteAgain;
         *dataLength = len;
         return errSSLWouldBlock;
+      }
+      if (errno == EPIPE || errno == ECONNRESET) {
+        *dataLength = len;
+        return errSSLClosedAbort;
       }
       g_warning("write returned %d", errno);
       return errSSLInternal;
@@ -279,6 +287,9 @@ int irssi_ssl_handshake(GIOChannel *handle)
     if (status == errSSLWouldBlock) {
       /* openssl can tell if we want read or write, I can't */
       return (channel->again == GIOSSLReadAgain ? 1 : 3);
+    }
+    if (status == errSSLClosedAbort || status == errSSLClosedGraceful || status == errSSLClosedNoNotify) {
+      return -1;
     }
     g_warning("SSLHandshake failed with error %d.", status);
     return -1;
