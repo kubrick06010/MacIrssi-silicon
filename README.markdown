@@ -1,38 +1,73 @@
 # MacIrssi
 
-MacIrssi is an IRC client with a native Mac UI. It's based on [irssi](http://www.irssi.org/), an awesome command-line IRC client.
+MacIrssi is an IRC client with a native macOS UI, built on top of [irssi](https://irssi.org).
 
-![](http://cl.ly/image/2v0j0F1C0W3o/Screen%20Shot%202014-02-24%20at%2009.33.43.png)
+## Status
 
+- Active branch: `main`
+- Primary build path: Xcode project (`MacIrssi.xcodeproj`)
+- Dependency pipeline: scripted under `Frameworks/MILibs/scripts`
 
-## Branching and Development ##
+## Getting the Code
 
-MacIrssi uses the [GitFlow](http://github.com/nvie/gitflow) style of branching and code maintainance. This means the branches have specific names and uses:
+```bash
+git clone https://github.com/kubrick06010/MacIrssi-silicon.git
+cd MacIrssi
+```
 
-* master: The current release branch. Check this out and build if you want the latest version.
-* develop: The current development HEAD, this is meant to be buildable and runnable at all times.
-* feature/*: Feature branches for new work in the develop tree, very unstable and only really to be built if you need the feature. They disappear after being merged into develop.
-* hotfix/*: A hotfix for the master branch.
+No git submodules are required.
 
-It's a good bet that you want the develop branch, unless you're specifically looking to build your own release version. Patches to develop will be gladly accepted if useful, tidy and neat.
+## Building in Xcode
 
+1. Open `MacIrssi.xcodeproj`.
+2. Select scheme `MacIrssi`.
+3. Build configuration: `Development` (or `Debug`).
+4. Build and run.
 
-## Checking Out ##
+## Dependency Pipeline (MILibs)
 
-To check out the MacIrssi code base, do the following
+MacIrssi uses a staged dependency flow for GLib/libintl in `Frameworks/MILibs`.
 
-	# git clone <clone url>
-	# git checkout <desired branch>
-	# git submodule init
-	# git submodule update
+### Main gate commands
 
+```bash
+Frameworks/MILibs/scripts/ci_verify_milibs.sh
+Frameworks/MILibs/scripts/verify_app_bundle.sh <path-to-MacIrssi.app>
+```
 
-## Compiling ##
+Or run the combined local gate:
 
-Compiling MacIrssi is a tricky beast. The plain Irssi core that powers MacIrssi requires glib in order to function. This means compiling up a bunch of GNU libraries in order to build the glib dylib, amongst others, needed to run MacIrssi.
+```bash
+Frameworks/MILibs/scripts/run_local_gate.sh <path-to-MacIrssi.app>
+```
 
-To this end, there is a submodule in MacIrssi called MILibs. There is a target in the main project called "Build MILibs", this target does not get run automatically. You need to forcibly invoke this target, from the top level Xcode project, to build the required libraries. After that, you never need to run it again unless the version of MILibs changes.
+### Manual dependency build (optional)
 
-Keep an eye out, if the Frameworks/MILibs subproject starts showing up in your diffs after you've checked out then you likely need to update the submodule checkout for that branch.
+```bash
+cd Frameworks/MILibs
+./scripts/bootstrap_tools.sh
+./scripts/build_all_deps.sh
+./scripts/verify_artifact_contract.sh "$(pwd)/stage"
+```
 
-	# git submodule update
+## Runtime Smoke Expectations
+
+A validated run should cover:
+
+1. App launch and main window render
+2. Preferences opens without exceptions
+3. Chat font change updates channel ribbon sizing
+4. IRC connect/join/send/receive flow
+5. Channel search works
+6. Quit/relaunch is stable
+
+Reference docs:
+
+- `Frameworks/MILibs/RUNTIME_SMOKE_CHECKLIST.md`
+- `Frameworks/MILibs/RUNTIME_SMOKE_RESULTS.md`
+- `Frameworks/MILibs/MILESTONE_STATUS.md`
+
+## Notes for Contributors
+
+- Keep changes on short-lived branches and merge into `main` once build + smoke checks pass.
+- Prefer updating docs/scripts in `Frameworks/MILibs` when dependency behavior changes.
