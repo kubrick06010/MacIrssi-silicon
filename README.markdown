@@ -7,6 +7,7 @@ MacIrssi is an IRC client with a native macOS UI, built on top of [irssi](https:
 - Active branch: `main`
 - Primary build path: Xcode project (`MacIrssi.xcodeproj`)
 - Dependency pipeline: scripted under `Frameworks/MILibs/scripts`
+- Distribution model: source-first (no prebuilt notarized binaries by default)
 
 ## Getting the Code
 
@@ -23,6 +24,19 @@ No git submodules are required.
 2. Select scheme `MacIrssi`.
 3. Build configuration: `Development` (or `Debug`).
 4. Build and run.
+
+## Source-only Releases
+
+MacIrssi currently publishes source-only releases by default.
+This avoids macOS Gatekeeper failures from unsigned/not-unnotarized app bundles.
+
+Create a source-only GitHub release:
+
+```bash
+GH_REPO=kubrick06010/MacIrssi-silicon xcodescripts/release_source_only.sh
+```
+
+GitHub will attach source archives (`.zip` / `.tar.gz`) automatically for the tag.
 
 ## Dependency Pipeline (MILibs)
 
