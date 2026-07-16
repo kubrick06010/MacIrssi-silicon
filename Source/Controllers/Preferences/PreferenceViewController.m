@@ -1143,7 +1143,10 @@
   else if ([itemIdentifier isEqualToString:@"Shortcuts"])
   {
     [toolbarItem setLabel:@"Shortcuts"];
-    [toolbarItem setImage:[NSImage imageNamed:@"Keyboard"]];
+    NSImage *keyboardImage = [[NSImage imageNamed:@"Keyboard"] copy];
+    [keyboardImage setSize:NSMakeSize(32.0, 32.0)];
+    [toolbarItem setImage:keyboardImage];
+    [keyboardImage release];
     [toolbarItem setAction:@selector(changeViewFromToolbar:)];
     [toolbarItem setTarget:self];
   }
